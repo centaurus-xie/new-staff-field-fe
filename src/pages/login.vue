@@ -225,12 +225,12 @@ export default {
 
                     <form v-else-if="showPasswordForm" @submit.prevent="handlePassword">
                         <div>
-                            <label for="password">密码:</label>
-                            <input type="password" id="password" v-model="password" required>
+                            <label for="password">设置密码:</label>
+                            <input type="password" id="password" v-model="password" required autocomplete="new-password">
                         </div>
                         <div>
                             <label for="passwordAssure">确认密码:</label>
-                            <input type="password" id="passwordAssure" v-model="passwordAssure" required>
+                            <input type="password" id="passwordAssure" v-model="passwordAssure" required autocomplete="new-password">
                         </div>
                         <div style="display: flex; justify-content: space-between;">
                             <button type="button" @click="backToPhoneEmail" style="display: block;">上一步</button>
@@ -245,7 +245,7 @@ export default {
                         </div>
                         <div>
                             <label for="login-password">密码:</label>
-                            <input type="password" id="login-password" v-model="password" required>
+                            <input type="password" id="login-password" v-model="password" required autocomplete="current-password">
                         </div>
                         <button type="submit" style="display: flex; margin-left: auto; margin-right: auto">登陆</button>
                     </form>
