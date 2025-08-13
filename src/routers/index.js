@@ -11,12 +11,13 @@ const routes = [
     {
         path: '/login',
         name: 'login',
-        component: login,
+        component: login
     },
     {
         path: '/fieldMainPage',
         name: 'fieldMainPage',
         component: fieldMainPage,
+        meta: { requiresAuth: true }
     },
 
 ];
@@ -27,17 +28,23 @@ const router = createRouter({
 });
 
 
-// 路由守卫检查登录状态
-// router.beforeEach((to, from, next) => {
-//     if (to.matched.some(record => record.meta.requiresAuth)) {
-//         const isLoggedIn = localStorage.getItem('token') !== null;
-//         if (!isLoggedIn) {
-//             next('/login');
-//         } else {
-//             next();
-//         }
-//     } else {
-//         next();
-//     }
-// });
+// 全局前置守卫
+router.beforeEach((to, from, next) => {
+    // 检查目标路由是否需要认证
+    if (to.meta.requiresAuth) {
+        // 检查用户是否已登录（可以通过localStorage、sessionStorage或cookie检查）
+        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
+        if (isLoggedIn) {
+            // 用户已登录，允许访问
+            next();
+        } else {
+            // 用户未登录，重定向到登录页
+            next('/login');
+        }
+    } else {
+        // 不需要认证的路由，直接访问
+        next();
+    }
+});
 export default router;

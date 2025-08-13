@@ -161,7 +161,10 @@ export default {
                         message: '登陆成功',
                         type: 'success'
                     });
-                    // 使用 Vue Router 的 push 方法进行重定向
+                    // 设置登录状态
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('username', this.username);
+                    // 重定向
                     this.$router.push('/fieldMainPage');
                 } else {
                     ElMessage({
@@ -224,6 +227,16 @@ export default {
                     </form>
 
                     <form v-else-if="showPasswordForm" @submit.prevent="handlePassword">
+                        <!-- 隐藏的用户名字段 -->
+                        <input
+                            type="text"
+                            name="username"
+                            :value=this.username
+                            autocomplete="username"
+                            style="display: none;"
+                            tabindex="-1"
+                            aria-hidden="true"
+                        />
                         <div>
                             <label for="password">设置密码:</label>
                             <input type="password" id="password" v-model="password" required autocomplete="new-password">
@@ -241,7 +254,7 @@ export default {
                     <form v-else @submit.prevent="handleLogin">
                         <div>
                             <label for="login-username">用户名:</label>
-                            <input type="text" id="login-username" v-model="username" required>
+                            <input type="text" id="login-username" v-model="username" required autocomplete="username">
                         </div>
                         <div>
                             <label for="login-password">密码:</label>
