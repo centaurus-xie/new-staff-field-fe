@@ -94,14 +94,31 @@ export default {
             passwordAssure: '',
             nickname: '',
             email: '',
-            phone: ''
+            phone: '',
+            // 动画方向控制变量
+            isReverse: false
         };
     },
     methods: {
         // 切换注册/登录表单
         toggleForm() {
+            this.isReverse = false; // 重置动画方向
             this.showRegisterForm = !this.showRegisterForm;
             this.showLoginForm = !this.showLoginForm;
+        },
+
+        // 返回上一步（从手机号邮箱页面返回到注册页面）
+        backToRegister() {
+            this.isReverse = true; // 设置反向动画
+            this.showPhoneEmailForm = false;
+            this.showRegisterForm = true;
+        },
+
+        // 返回上一步（从密码页面返回到手机号邮箱页面）
+        backToPhoneEmail() {
+            this.isReverse = true; // 设置反向动画
+            this.showPasswordForm = false;
+            this.showPhoneEmailForm = true;
         },
 
         // SHA-256 加盐哈希
@@ -130,6 +147,7 @@ export default {
                     // 后端在用户名存在时返回True
                     alert('用户名已存在');
                 } else {
+                    this.isReverse = false; // 设置正向动画
                     this.showPhoneEmailForm = true;
                     this.showRegisterForm = false;
                 }
@@ -143,6 +161,7 @@ export default {
                 alert('邮箱和电话不能为空');
                 return;
             } else {
+                this.isReverse = false; // 设置正向动画
                 this.showPasswordForm = true;
                 this.showPhoneEmailForm = false;
             }
@@ -172,6 +191,7 @@ export default {
                 if (response.data.success) {
                     alert('注册成功');
                     // 隐藏注册页面，回到登陆页面登陆
+                    this.isReverse = true; // 设置反向动画
                     this.showPasswordForm = false;
                     this.showLoginForm = true;
                 } else {
@@ -219,13 +239,16 @@ export default {
     <div class="background">
         <div class="app-container">
             <div class="header">
-                <h1>登陆到新员工园地</h1>
+                <h1 class="fancy-title">
+<!--                    <i class="fas fa-user-circle"></i>-->
+                    欢迎来到新员工园地
+                </h1>
                 <button @click="toggleForm">{{ showLoginForm ? '没有账号？注册' : '已有账号？登陆' }}</button>
             </div>
 
             <div class="form-container">
             <!-- 使用 transition-group 实现表单切换动画 -->
-                <transition name="form-slide" mode="out-in">
+                <transition :name="isReverse ? 'form-slide-reverse' : 'form-slide'" mode="out-in">
 
                     <form v-if="showRegisterForm" @submit.prevent="handleRegister">
                         <div>
@@ -236,7 +259,7 @@ export default {
                             <label for="nickname">昵称:</label>
                             <input type="text" id="nickname" v-model="nickname" required>
                         </div>
-                        <button type="submit">下一步</button>
+                        <button type="submit" style="display: block; margin-left: auto;">下一步</button>
                     </form>
 
                     <form v-else-if="showPhoneEmailForm" @submit.prevent="handlePhoneEmail">
@@ -248,7 +271,10 @@ export default {
                             <label for="phone">手机号:</label>
                             <input type="tel" id="phone" v-model="phone" required>
                         </div>
-                        <button type="submit">下一步</button>
+                        <div style="display: flex; justify-content: space-between;">
+                            <button type="button" @click="backToRegister" style="display: block;">上一步</button>
+                            <button type="submit" style="display: block; margin-left: auto;">下一步</button>
+                        </div>
                     </form>
 
                     <form v-else-if="showPasswordForm" @submit.prevent="handlePassword">
@@ -260,7 +286,10 @@ export default {
                             <label for="passwordAssure">确认密码:</label>
                             <input type="password" id="passwordAssure" v-model="passwordAssure" required>
                         </div>
-                        <button type="submit">注册</button>
+                        <div style="display: flex; justify-content: space-between;">
+                            <button type="button" @click="backToPhoneEmail" style="display: block;">上一步</button>
+                            <button type="submit" style="display: block; margin-left: auto;">注册</button>
+                        </div>
                     </form>
 
                     <form v-else @submit.prevent="handleLogin">
@@ -272,7 +301,7 @@ export default {
                             <label for="login-password">密码:</label>
                             <input type="password" id="login-password" v-model="password" required>
                         </div>
-                        <button type="submit">登陆</button>
+                        <button type="submit" style="display: flex; margin-left: auto; margin-right: auto">登陆</button>
                     </form>
 
                 </transition>
@@ -282,12 +311,30 @@ export default {
 </template>
 
 <style scoped>
-/* 添加表单过渡动画样式 */
+/*大标题字体*/
+.fancy-title {
+    color: steelblue;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    margin-bottom: 15px;
+    font-family: 'Simsun','Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 800;
+    letter-spacing: 5px;
+    font-size: 36px;
+}
+
+.fancy-title i {
+    margin-right: 10px;
+    color: #42b883;
+}
+
+/*表单过渡动画 - 正向*/
 .form-slide-enter-active,
 .form-slide-leave-active {
     transition: all 0.3s ease;
-    position: absolute;
-    width: 100%;
+    /*position: absolute;*/
+    width: calc(100% - 60px); /* 减去容器的左右内边距 */
+    /*left: 20px; !* 与容器的左内边距一致 *!*/
+    /*right: 20px;*/
 }
 
 .form-slide-enter-from {
@@ -300,7 +347,25 @@ export default {
     transform: translateX(-30px);
 }
 
-/* 新增样式：固定标题和按钮 */
+/*表单过渡动画 - 反向*/
+.form-slide-reverse-enter-active,
+.form-slide-reverse-leave-active {
+    transition: all 0.3s ease;
+    /*position: absolute;*/
+    width: calc(100% - 60px); /* 减去容器的左右内边距 */
+}
+
+.form-slide-reverse-enter-from {
+    opacity: 0;
+    transform: translateX(-30px);
+}
+
+.form-slide-reverse-leave-to {
+    opacity: 0;
+    transform: translateX(30px);
+}
+
+/*标题和按钮*/
 .header {
     text-align: center;
     margin-bottom: 30px;
@@ -309,7 +374,7 @@ export default {
 }
 
 .header h1 {
-    color: white;
+    color: steelblue;
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     margin-bottom: 15px;
 }
@@ -317,7 +382,7 @@ export default {
 .header button {
     padding: 10px 20px;
     background-color: rgba(255, 255, 255, 0.2);
-    color: white;
+    color: midnightblue;
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 20px;
     cursor: pointer;
@@ -325,24 +390,45 @@ export default {
 }
 
 .header button:hover {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 3);
     transform: translateY(-2px);
 }
 
-/* 表单容器 */
+/*表单容器*/
 .form-container {
     position: relative;
     width: 100%;
     max-width: 400px;
     min-height: 300px; /* 确保容器有最小高度 */
+    padding: 0 20px; /* 添加水平内边距 */
+    box-sizing: border-box; /* 包含内边距在内的宽度计算 */
+    margin: 0 auto; /* 水平居中 */
+    height: auto;
+}
+
+.form-container button {
+    padding: 10px 20px;
+    background-color: rgba(66, 184, 131, 0.5);
+    color: #000000;
+    border: 1px solid rgba(66, 184, 131, 0.6);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: '085-上首元气体', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    font-size: 18px;
+}
+
+.form-container button:hover{
+    background-color: rgba(66, 184, 131, 1);
+    transform: translateY(-2px);
 }
 
 form {
     margin-top: 0;
-    width: 100%;
+    /*width: 100%;*/
     padding: 30px;
     background: rgba(255, 255, 255, 0.95);
-    border-radius: 12px;
+    border-radius: 20px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
     position: relative;
     backdrop-filter: blur(10px);
@@ -362,19 +448,20 @@ input {
     width: 100%;
     padding: 8px;
     box-sizing: border-box;
+    border-radius: 20px;
+    border: 2px solid #ccc;
+    outline: none; /* 移除默认轮廓 */
+    transition: border-color 0.3s;
+    margin-bottom: 10px;
 }
 
-button {
-    padding: 10px 20px;
-    background-color: #42b883;
-    color: white;
-    border: none;
-    cursor: hand;
+input:focus {
+    border-color: #42b883;
+    border-width: 2px;
+    transition: all 0.2s;
+
 }
 
-button:hover {
-    background-color: #38a87c;
-}
 </style>
 
 
@@ -384,16 +471,23 @@ body, html {
     padding: 0;
     height: 100%;
     overflow-x: hidden; /* 防止水平滚动条 */
+    /* 添加移动端优化 */
+    -webkit-text-size-adjust: 100%; /* 防止iOS Safari调整字体大小 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .app-container {
     position: relative;
     height: 100%;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 1;
+    padding: 20px; /* 添加内边距防止内容贴边 */
+    box-sizing: border-box;
 }
 
 /* 背景图片样式 */
@@ -406,5 +500,17 @@ body, html {
     background-image: url('../assets/background.jpg');
     background-size: cover; /* 背景图片覆盖整个容器 */
     background-position: center; /* 背景图片居中 */
+}
+
+/* 移动端横屏适配 */
+@media (max-height: 500px) and (orientation: landscape) {
+    .app-container {
+        justify-content: flex-start;
+        padding-top: 20px;
+    }
+
+    .form-container {
+        min-height: 250px;
+    }
 }
 </style>
