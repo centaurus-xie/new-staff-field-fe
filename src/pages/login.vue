@@ -2,83 +2,8 @@
 import axios from "axios";
 import SHA256 from 'crypto-js/sha256';
 import encHex from 'crypto-js/enc-hex';
+import { ElMessage } from 'element-plus';
 
-// 切换注册/登录表单
-// const toggleForm = () => {
-//     showRegisterForm.value = !showRegisterForm.value;
-// };
-// // SHA-256 加盐哈希
-// async function hashPasswordWithSalt(password, salt) {
-//     const text = password + salt;
-//     const encoder = new TextEncoder();
-//     const data = encoder.encode(text);
-//     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-//     const hashArray = Array.from(new Uint8Array(hashBuffer));
-//     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-// }
-//
-// const handleRegister = async () => {
-//     if (username.value === '' || password.value === '') {
-//         alert('用户名和密码不能为空');
-//         return;
-//     }
-//     // 从后端获取盐值
-//     const saltResponse = await axios.get('/api/auth/salt');
-//     const salt = saltResponse.data.salt;
-//     // 使用 SHA-256加盐哈希对密码加密
-//     const hashedPassword = await hashPasswordWithSalt(password.value, salt);
-//
-//     try{
-//         const response = await axios.post('/api/auth/register', {
-//             username: username.value,
-//             password: hashedPassword,
-//             nickname: nickname.value,
-//             email: email.value,
-//             phone: phone.value
-//         });
-//
-//         if (response.data.success) {
-//             alert('注册成功');
-//             // 隐藏注册页面，回到登陆页面登陆
-//             showRegisterForm.value = false;
-//         } else {
-//             alert('注册失败: ' + response.data.message);
-//         }
-//     }catch (error) {
-//         alert('注册时发生错误: ' + error.message);
-//     }
-//
-//     alert('注册成功');
-// };
-//
-// const handleLogin = async () => {
-//     if (username.value === '' || password.value === '') {
-//         alert('用户名和密码不能为空');
-//         return;
-//     }
-//     // 获取 salt（根据用户名）
-//     const saltResponse = await axios.get(`/api/auth/salt?username=${username}`);
-//     const salt = saltResponse.data.salt;
-//     // 使用 SHA-256加盐哈希对密码加密
-//     const hashedPassword = await hashPasswordWithSalt(password.value, salt);
-//
-//     try {
-//         const response = await axios.post('/api/auth/login', {
-//             username: username.value,
-//             password: hashedPassword
-//         });
-//
-//         if (response.data.success) {
-//             alert('登陆成功');
-//             // 使用 Vue Router 的 push 方法进行重定向
-//             this.$router.push('/fieldMainPage');
-//         } else {
-//             alert('登陆失败: ' + response.data.message);
-//         }
-//     } catch (error) {
-//         alert('登陆时发生错误: ' + error.message);
-//     }
-// };
 
 export default {
     name: 'Auth',
@@ -189,22 +114,34 @@ export default {
                 });
 
                 if (response.data.success) {
-                    alert('注册成功');
+                    ElMessage({
+                        message: '注册成功',
+                        type: 'success'
+                    });
                     // 隐藏注册页面，回到登陆页面登陆
                     this.isReverse = true; // 设置反向动画
                     this.showPasswordForm = false;
                     this.showLoginForm = true;
                 } else {
-                    alert('注册失败: ' + response.data.message);
+                    ElMessage({
+                        message: '注册失败: ' + response.data.message,
+                        type: 'error'
+                    });
                 }
             }catch (error) {
-                alert('注册时发生错误: ' + error.message);
+                ElMessage({
+                    message: '注册时发生错误: ' + error.message,
+                    type: 'error'
+                });
             }
         },
 
         async handleLogin() {
             if (this.username === '' || this.password === '') {
-                alert('用户名和密码不能为空');
+                ElMessage({
+                    message: '用户名和密码不能为空',
+                    type: 'warning'
+                });
                 return;
             }
             // 获取 salt（根据用户名）
@@ -220,14 +157,23 @@ export default {
                 });
 
                 if (response.data.success) {
-                    alert('登陆成功');
+                    ElMessage({
+                        message: '登陆成功',
+                        type: 'success'
+                    });
                     // 使用 Vue Router 的 push 方法进行重定向
                     this.$router.push('/fieldMainPage');
                 } else {
-                    alert('登陆失败: 用户名或密码错误');
+                    ElMessage({
+                        message: '登陆失败: 用户名或密码错误',
+                        type: 'error'
+                    });
                 }
             } catch (error) {
-                alert('登陆时发生错误: ' + error.message);
+                ElMessage({
+                    message: '登陆时发生错误: ' + error.message,
+                    type: 'error'
+                });
             }
         }
     }
