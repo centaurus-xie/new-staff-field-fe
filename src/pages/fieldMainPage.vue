@@ -1,8 +1,7 @@
 <template>
     <el-container class="field-main-page">
         <el-header>
-            <h1>欢迎加入NJCB</h1>
-            <el-button @click="logout" type="danger" style="float: right; margin-top: 10px;">退出登录</el-button>
+            <h1 style="color: #007bff; text-align: center; font-size: 36px;">欢迎加入NJCB</h1>
         </el-header>
         <el-main>
             <el-row :gutter="20">
@@ -24,18 +23,23 @@
                     </el-card>
                 </el-col>
             </el-row>
-            <el-row justify="end">
+            <el-row justify="end" style="margin-top: 30px;">
                 <el-col :span="6">
-                    <el-button type="primary" @click="viewProfile">查看个人信息</el-button>
-                    <el-button @click="logout">退出登陆</el-button>
+                    <div class="button-container">
+                        <el-button type="primary" @click="viewProfile">个人信息</el-button>
+                        <el-button type="danger" @click="logout">退出登陆</el-button>
+                    </div>
                 </el-col>
             </el-row>
         </el-main>
+
+        <UserProfile ref="userProfile" />
     </el-container>
 </template>
 
 <script>
 import { ElContainer, ElHeader, ElMain, ElRow, ElCol, ElCard, ElButton } from 'element-plus';
+import UserProfile from '../components/UserProfile.vue'; // 引入用户信息组件
 
 export default {
     name: "fieldMainPage",
@@ -46,12 +50,12 @@ export default {
         ElRow,
         ElCol,
         ElCard,
-        ElButton
+        ElButton,
+        UserProfile
     },
     methods: {
         viewProfile() {
-            // 跳转到个人信息页面
-            // this.$router.push('/profile');
+            this.$refs.userProfile.show();
         },
         logout() {
             // 清除登录状态
@@ -71,5 +75,12 @@ export default {
 
 .el-card {
     margin-top: 20px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px; /* 按钮之间的间距 */
+    flex-wrap: nowrap; /* 防止换行 */
 }
 </style>

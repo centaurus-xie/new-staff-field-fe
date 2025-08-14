@@ -70,7 +70,10 @@ export default {
                 console.log(response);
                 if (response.data) {
                     // 后端在用户名存在时返回True
-                    alert('用户名已存在');
+                    ElMessage({
+                        message: '用户名已存在，请重新选择',
+                        type: 'warning'
+                    });
                 } else {
                     this.isReverse = false; // 设置正向动画
                     this.showPhoneEmailForm = true;
