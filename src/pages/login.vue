@@ -24,6 +24,32 @@ export default {
             isReverse: false
         };
     },
+    computed: {
+        // 输入内容合法性检验
+        hasMinLength() {
+            return this.password.length >= 8;
+        },
+        hasLetter() {
+            return /[a-zA-Z]/.test(this.password);
+        },
+        hasNumber() {
+            return /\d/.test(this.password);
+        },
+        hasSpecialChar() {
+            return /[`~!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(this.password);
+        },
+        isPasswordValid() {
+            return this.hasLetter && this.hasNumber && this.hasSpecialChar;
+        },
+        isEmailValid() {
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
+            return emailRegex.test(this.email);
+        },
+        isPhoneValid() {
+            const phoneRegex = /^1[3-9]\d{9}$/;
+            return phoneRegex.test(this.phone);
+        }
+    },
     methods: {
         // 切换注册/登录表单
         toggleForm() {
@@ -86,8 +112,20 @@ export default {
 
         handlePhoneEmail() {
             if (this.email === '' || this.phone === '') {
-                alert('邮箱和电话不能为空');
-                return;
+                ElMessage({
+                    message: '邮箱和电话不能为空',
+                    type: 'warning'
+                });
+            } else if (!this.isEmailValid) {
+                ElMessage({
+                    message: '请输入正确的邮箱',
+                    type: 'warning'
+                });
+            } else if (!this.isPhoneValid) {
+                ElMessage({
+                    message: '请输入正确的手机号',
+                    type: 'warning'
+                });
             } else {
                 this.isReverse = false; // 设置正向动画
                 this.showPasswordForm = true;
@@ -98,6 +136,24 @@ export default {
         async handlePassword() {
             if (this.password === '' || this.passwordAssure === '') {
                 alert('密码不能为空');
+                return;
+            }
+
+            // 校验密码复杂度
+            if (!this.isPasswordValid) {
+                ElMessage({
+                    message: '密码必须包含字母、数字和特殊符号',
+                    type: 'warning'
+                });
+                return;
+            }
+
+            // 校验两次密码是否一致
+            if (this.password !== this.passwordAssure) {
+                ElMessage({
+                    message: '两次输入的密码不一致',
+                    type: 'warning'
+                });
                 return;
             }
 
@@ -243,6 +299,13 @@ export default {
                         <div>
                             <label for="password">设置密码:</label>
                             <input type="password" id="password" v-model="password" required autocomplete="new-password">
+                            <!-- 密码复杂度提示 -->
+                            <div v-if="password && !isPasswordValid" class="password-hint">
+                                <p :class="{ 'valid': hasMinLength }">• 至少8位</p>
+                                <p :class="{ 'valid': hasLetter }">• 包含字母</p>
+                                <p :class="{ 'valid': hasNumber }">• 包含数字</p>
+                                <p :class="{ 'valid': hasSpecialChar }">• 包含特殊符号</p>
+                            </div>
                         </div>
                         <div>
                             <label for="passwordAssure">确认密码:</label>
@@ -250,7 +313,7 @@ export default {
                         </div>
                         <div style="display: flex; justify-content: space-between;">
                             <button type="button" @click="backToPhoneEmail" style="display: block;">上一步</button>
-                            <button type="submit" style="display: block; margin-left: auto;">注册</button>
+                            <button type="submit" style="display: block; margin-left: auto;" :disabled="!isPasswordValid">注册</button>
                         </div>
                     </form>
 
@@ -422,6 +485,29 @@ input:focus {
     border-width: 2px;
     transition: all 0.2s;
 
+}
+
+/* 密码复杂度提示样式 */
+.password-hint {
+    margin-top: 5px;
+    font-size: 12px;
+    color: #666;
+}
+
+.password-hint p {
+    margin: 2px 0;
+    color: #ff4d4f;
+}
+
+.password-hint p.valid {
+    color: #52c41a;
+}
+
+/* 注册按钮在密码不符合要求时的样式 */
+button:disabled {
+    background-color: #eee;
+    color: #aaa;
+    cursor: not-allowed;
 }
 
 </style>

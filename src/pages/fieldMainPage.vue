@@ -16,7 +16,7 @@
                             </el-col>
                             <el-col :span="12">
                                 <el-card header="新员工指南">
-                                    <p>作为新员工，您需要了解...（此处省略新员工指南内容）</p>
+                                    <p>作为新员工，您需要了解...（此处省略新员工指南内容，未来可以继续增补各种内容）</p>
                                 </el-card>
                             </el-col>
                         </el-row>
@@ -26,8 +26,8 @@
             <el-row justify="end" style="margin-top: 30px;">
                 <el-col :span="6">
                     <div class="button-container">
-                        <el-button type="primary" @click="viewProfile">个人信息</el-button>
-                        <el-button type="danger" @click="logout">退出登陆</el-button>
+                        <el-button class="button-profile"  @click="viewProfile">个人信息</el-button>
+                        <el-button class="button-logout"  @click="logout">退出登陆</el-button>
                     </div>
                 </el-col>
             </el-row>
@@ -82,5 +82,41 @@ export default {
     justify-content: flex-end;
     gap: 10px; /* 按钮之间的间距 */
     flex-wrap: nowrap; /* 防止换行 */
+}
+
+.button-profile{
+    padding: 10px 20px;
+    background-color: rgba(66, 184, 131, 0.5);
+    color: #000000;
+    border: 1px solid rgba(66, 184, 131, 0.6);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: '085-上首元气体', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    font-size: 18px;
+}
+
+.button-profile:hover{
+    background-color: rgba(66, 184, 131, 1);
+    color: #000000;
+    transform: translateY(-2px);
+}
+
+.button-logout{
+    padding: 10px 20px;
+    background-color: rgba(255, 30, 30, 0.5);
+    color: #000000;
+    border: 1px solid rgba(255, 30, 30, 0.53);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: '085-上首元气体', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    font-size: 18px;
+}
+
+.button-logout:hover{
+    background-color: rgba(255, 30, 30, 0.7);
+    color: #000000;
+    transform: translateY(-2px);
 }
 </style>
