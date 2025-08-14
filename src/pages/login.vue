@@ -39,7 +39,7 @@ export default {
             return /[`~!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(this.password);
         },
         isPasswordValid() {
-            return this.hasLetter && this.hasNumber && this.hasSpecialChar;
+            return this.hasLetter && this.hasNumber && this.hasSpecialChar && this.hasMinLength;
         },
         isEmailValid() {
             const emailRegex = /^[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
@@ -84,7 +84,10 @@ export default {
 
         async handleRegister() {
             if (this.username === '' || this.nickname === '') {
-                alert('用户名和昵称不能为空');
+                ElMessage({
+                    message: '用户名和昵称不能为空',
+                    type: 'warning'
+                });
                 return;
             }
             try{
@@ -106,7 +109,10 @@ export default {
                     this.showRegisterForm = false;
                 }
             }catch (error) {
-                alert('注册时发生错误: ' + error.message);
+                ElMessage({
+                    message: '注册时发生错误: ' + error.message,
+                    type: 'error'
+                });
             }
         },
 
@@ -135,7 +141,10 @@ export default {
 
         async handlePassword() {
             if (this.password === '' || this.passwordAssure === '') {
-                alert('密码不能为空');
+                ElMessage({
+                    message: '密码不能为空',
+                    type: 'warning'
+                });
                 return;
             }
 
@@ -261,11 +270,11 @@ export default {
                     <form v-if="showRegisterForm" @submit.prevent="handleRegister">
                         <div>
                             <label for="username">用户名:</label>
-                            <input type="text" id="username" v-model="username" required>
+                            <input type="text" id="username" v-model="username" placeholder="请输入用户名" title="" >
                         </div>
                         <div>
                             <label for="nickname">昵称:</label>
-                            <input type="text" id="nickname" v-model="nickname" required>
+                            <input type="text" id="nickname" v-model="nickname" placeholder="请输入昵称" title="" >
                         </div>
                         <button type="submit" style="display: block; margin-left: auto;">下一步</button>
                     </form>
@@ -273,11 +282,11 @@ export default {
                     <form v-else-if="showPhoneEmailForm" @submit.prevent="handlePhoneEmail">
                         <div>
                             <label for="email">邮箱:</label>
-                            <input type="email" id="email" v-model="email" required>
+                            <input type="email" id="email" v-model="email" placeholder="请输入邮箱" title="" >
                         </div>
                         <div>
                             <label for="phone">手机号:</label>
-                            <input type="tel" id="phone" v-model="phone" required>
+                            <input type="tel" id="phone" v-model="phone" placeholder="请输入手机号" title="" >
                         </div>
                         <div style="display: flex; justify-content: space-between;">
                             <button type="button" @click="backToRegister" style="display: block;">上一步</button>
@@ -298,7 +307,7 @@ export default {
                         />
                         <div>
                             <label for="password">设置密码:</label>
-                            <input type="password" id="password" v-model="password" required autocomplete="new-password">
+                            <input type="password" id="password" v-model="password" placeholder="请设置密码" title=""  autocomplete="new-password">
                             <!-- 密码复杂度提示 -->
                             <div v-if="password && !isPasswordValid" class="password-hint">
                                 <p :class="{ 'valid': hasMinLength }">• 至少8位</p>
@@ -306,10 +315,13 @@ export default {
                                 <p :class="{ 'valid': hasNumber }">• 包含数字</p>
                                 <p :class="{ 'valid': hasSpecialChar }">• 包含特殊符号</p>
                             </div>
+                            <div v-if="isPasswordValid" class="password-hint">
+                                <p :class="{ 'valid': isPasswordValid }">• 密码符合要求</p>
+                            </div>
                         </div>
                         <div>
                             <label for="passwordAssure">确认密码:</label>
-                            <input type="password" id="passwordAssure" v-model="passwordAssure" required autocomplete="new-password">
+                            <input type="password" id="passwordAssure" v-model="passwordAssure" placeholder="必须和上次输入一致" title=""  autocomplete="new-password">
                         </div>
                         <div style="display: flex; justify-content: space-between;">
                             <button type="button" @click="backToPhoneEmail" style="display: block;">上一步</button>
@@ -320,11 +332,11 @@ export default {
                     <form v-else @submit.prevent="handleLogin">
                         <div>
                             <label for="login-username">用户名:</label>
-                            <input type="text" id="login-username" v-model="username" required autocomplete="username">
+                            <input type="text" id="login-username" v-model="username" placeholder="请输入用户名" title=""  autocomplete="username">
                         </div>
                         <div>
                             <label for="login-password">密码:</label>
-                            <input type="password" id="login-password" v-model="password" required autocomplete="current-password">
+                            <input type="password" id="login-password" v-model="password" placeholder="请输入密码" title=""  autocomplete="current-password">
                         </div>
                         <button type="submit" style="display: flex; margin-left: auto; margin-right: auto">登陆</button>
                     </form>
@@ -485,6 +497,40 @@ input:focus {
     border-width: 2px;
     transition: all 0.2s;
 
+}
+
+/* 修改placeholder样式 */
+input::placeholder {
+    color: #999;
+    font-style: italic;
+    font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+/* 兼容不同浏览器的placeholder样式 */
+input::-webkit-input-placeholder {
+    color: #999;
+    font-style: italic;
+    font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+input::-moz-placeholder {
+    color: #999;
+    font-style: italic;
+    font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+input:-ms-input-placeholder {
+    color: #999;
+    font-style: italic;
+    font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    font-size: 13px;
+    opacity: 0.8;
 }
 
 /* 密码复杂度提示样式 */

@@ -5,7 +5,7 @@
             width="500px"
             @close="handleClose"
     >
-        <el-form :model="userInfo" label-width="80px">
+        <el-form :model="userInfo" label-width="80px" class="profile-form">
             <el-form-item label="用户名">
                 <el-input v-model="userInfo.username" disabled></el-input>
             </el-form-item>
@@ -73,4 +73,11 @@ export default {
     display: flex;
     justify-content: flex-end;
 }
+
+.profile-form {
+    padding: 20px;
+    border-radius: 20px;
+}
+
+
 </style>
