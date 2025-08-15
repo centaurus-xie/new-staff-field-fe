@@ -54,8 +54,17 @@ export default {
         // 切换注册/登录表单
         toggleForm() {
             this.isReverse = false; // 重置动画方向
-            this.showRegisterForm = !this.showRegisterForm;
-            this.showLoginForm = !this.showLoginForm;
+            if (this.showLoginForm) {
+                // 当前显示登录表单，切换到注册表单
+                this.showLoginForm = false;
+                this.showRegisterForm = true;
+            } else {
+                // 当前显示注册表单，切换到登录表单
+                this.showRegisterForm = false;
+                this.showPhoneEmailForm = false;
+                this.showPasswordForm = false;
+                this.showLoginForm = true;
+            }
         },
 
         // 返回上一步（从手机号邮箱页面返回到注册页面）
