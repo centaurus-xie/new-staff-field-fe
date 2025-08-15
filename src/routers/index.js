@@ -11,13 +11,14 @@ const routes = [
     {
         path: '/login',
         name: 'login',
-        component: login
+        component: login,
+        meta: { title: '登录到新员工园地' }
     },
     {
         path: '/fieldMainPage',
         name: 'fieldMainPage',
         component: fieldMainPage,
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true, title: '新员工园地' }
     },
 
 ];
@@ -46,5 +47,11 @@ router.beforeEach((to, from, next) => {
         // 不需要认证的路由，直接访问
         next();
     }
+});
+
+// 全局后置钩子
+router.afterEach((to, from) => {
+    // console.log(`已完成从 ${from.path} 到 ${to.path} 的导航`);
+    document.title = to.meta.title || '新员工园地';
 });
 export default router;
