@@ -81,7 +81,7 @@
                         </div>
                         <div>
                             <label for="login-password">密码:</label>
-                            <input type="password" id="login-password" v-model="password" placeholder="请输入密码" title=""  autocomplete="current-password">
+                            <input type="password" id="login-password" v-model="loginPassword" placeholder="请输入密码" title=""  autocomplete="current-password">
                         </div>
                         <button type="submit" style="display: flex; margin-left: auto; margin-right: auto">登陆</button>
                     </form>
@@ -111,6 +111,7 @@ export default {
             username: '',
             password: '',
             passwordAssure: '',
+            loginPassword: '',
             nickname: '',
             email: '',
             phone: '',
@@ -308,7 +309,7 @@ export default {
         },
 
         async handleLogin() {
-            if (this.username === '' || this.password === '') {
+            if (this.username === '' || this.loginPassword === '') {
                 ElMessage({
                     message: '用户名和密码不能为空',
                     type: 'warning'
@@ -319,7 +320,7 @@ export default {
             const saltResponse = await axios.get(`/api/auth/salt?username=${this.username}`);
             const salt = saltResponse.data.salt;
             // 使用 SHA-256加盐哈希对密码加密
-            const hashedPassword = await this.hashPasswordWithSalt(this.password, salt);
+            const hashedPassword = await this.hashPasswordWithSalt(this.loginPassword, salt);
 
             try {
                 const response = await axios.post('/api/auth/login', {
