@@ -1,3 +1,97 @@
+<template>
+    <div class="background">
+        <div class="app-container">
+            <div class="header">
+                <h1 class="fancy-title">
+                    欢迎来到新员工园地
+                </h1>
+                <button @click="toggleForm">{{ showLoginForm ? '没有账号？注册' : '已有账号？登陆' }}</button>
+            </div>
+
+            <div class="form-container">
+            <!-- 使用 transition-group 实现表单切换动画 -->
+                <transition :name="isReverse ? 'form-slide-reverse' : 'form-slide'" mode="out-in">
+
+                    <form v-if="showRegisterForm" @submit.prevent="handleRegister">
+                        <div>
+                            <label for="username">用户名:</label>
+                            <input type="text" id="username" v-model="username" placeholder="请输入用户名" title="" >
+                        </div>
+                        <div>
+                            <label for="nickname">昵称:</label>
+                            <input type="text" id="nickname" v-model="nickname" placeholder="请输入昵称" title="" >
+                        </div>
+                        <button type="submit" style="display: block; margin-left: auto;">下一步</button>
+                    </form>
+
+                    <form v-else-if="showPhoneEmailForm" @submit.prevent="handlePhoneEmail">
+                        <div>
+                            <label for="email">邮箱:</label>
+                            <input type="email" id="email" v-model="email" placeholder="请输入邮箱" title="" >
+                        </div>
+                        <div>
+                            <label for="phone">手机号:</label>
+                            <input type="tel" id="phone" v-model="phone" placeholder="请输入手机号" title="" >
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <button type="button" @click="backToRegister" style="display: block;">上一步</button>
+                            <button type="submit" style="display: block; margin-left: auto;">下一步</button>
+                        </div>
+                    </form>
+
+                    <form v-else-if="showPasswordForm" @submit.prevent="handlePassword">
+                        <!-- 隐藏的用户名字段 -->
+                        <input
+                            type="text"
+                            name="username"
+                            :value=this.username
+                            autocomplete="username"
+                            style="display: none;"
+                            tabindex="-1"
+                            aria-hidden="true"
+                        />
+                        <div>
+                            <label for="password">设置密码:</label>
+                            <input type="password" id="password" v-model="password" placeholder="请设置密码" title=""  autocomplete="new-password">
+                            <!-- 密码复杂度提示 -->
+                            <div v-if="password && !isPasswordValid" class="password-hint">
+                                <p :class="{ 'valid': hasMinLength }">• 至少8位</p>
+                                <p :class="{ 'valid': hasLetter }">• 包含字母</p>
+                                <p :class="{ 'valid': hasNumber }">• 包含数字</p>
+                                <p :class="{ 'valid': hasSpecialChar }">• 包含特殊符号</p>
+                            </div>
+                            <div v-if="isPasswordValid" class="password-hint">
+                                <p :class="{ 'valid': isPasswordValid }">• 密码符合要求</p>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="passwordAssure">确认密码:</label>
+                            <input type="password" id="passwordAssure" v-model="passwordAssure" placeholder="必须和上次输入一致" title=""  autocomplete="new-password">
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <button type="button" @click="backToPhoneEmail" style="display: block;">上一步</button>
+                            <button type="submit" style="display: block; margin-left: auto;" :disabled="!isPasswordValid">注册</button>
+                        </div>
+                    </form>
+
+                    <form v-else @submit.prevent="handleLogin">
+                        <div>
+                            <label for="login-username">用户名:</label>
+                            <input type="text" id="login-username" v-model="username" placeholder="请输入用户名" title=""  autocomplete="username">
+                        </div>
+                        <div>
+                            <label for="login-password">密码:</label>
+                            <input type="password" id="login-password" v-model="password" placeholder="请输入密码" title=""  autocomplete="current-password">
+                        </div>
+                        <button type="submit" style="display: flex; margin-left: auto; margin-right: auto">登陆</button>
+                    </form>
+
+                </transition>
+            </div>
+        </div>
+    </div>
+</template>
+
 <script>
 import axios from "axios";
 import SHA256 from 'crypto-js/sha256';
@@ -261,117 +355,18 @@ export default {
 
 </script>
 
-<template>
-    <div class="background">
-        <div class="app-container">
-            <div class="header">
-                <h1 class="fancy-title">
-<!--                    <i class="fas fa-user-circle"></i>-->
-                    欢迎来到新员工园地
-                </h1>
-                <button @click="toggleForm">{{ showLoginForm ? '没有账号？注册' : '已有账号？登陆' }}</button>
-            </div>
-
-            <div class="form-container">
-            <!-- 使用 transition-group 实现表单切换动画 -->
-                <transition :name="isReverse ? 'form-slide-reverse' : 'form-slide'" mode="out-in">
-
-                    <form v-if="showRegisterForm" @submit.prevent="handleRegister">
-                        <div>
-                            <label for="username">用户名:</label>
-                            <input type="text" id="username" v-model="username" placeholder="请输入用户名" title="" >
-                        </div>
-                        <div>
-                            <label for="nickname">昵称:</label>
-                            <input type="text" id="nickname" v-model="nickname" placeholder="请输入昵称" title="" >
-                        </div>
-                        <button type="submit" style="display: block; margin-left: auto;">下一步</button>
-                    </form>
-
-                    <form v-else-if="showPhoneEmailForm" @submit.prevent="handlePhoneEmail">
-                        <div>
-                            <label for="email">邮箱:</label>
-                            <input type="email" id="email" v-model="email" placeholder="请输入邮箱" title="" >
-                        </div>
-                        <div>
-                            <label for="phone">手机号:</label>
-                            <input type="tel" id="phone" v-model="phone" placeholder="请输入手机号" title="" >
-                        </div>
-                        <div style="display: flex; justify-content: space-between;">
-                            <button type="button" @click="backToRegister" style="display: block;">上一步</button>
-                            <button type="submit" style="display: block; margin-left: auto;">下一步</button>
-                        </div>
-                    </form>
-
-                    <form v-else-if="showPasswordForm" @submit.prevent="handlePassword">
-                        <!-- 隐藏的用户名字段 -->
-                        <input
-                            type="text"
-                            name="username"
-                            :value=this.username
-                            autocomplete="username"
-                            style="display: none;"
-                            tabindex="-1"
-                            aria-hidden="true"
-                        />
-                        <div>
-                            <label for="password">设置密码:</label>
-                            <input type="password" id="password" v-model="password" placeholder="请设置密码" title=""  autocomplete="new-password">
-                            <!-- 密码复杂度提示 -->
-                            <div v-if="password && !isPasswordValid" class="password-hint">
-                                <p :class="{ 'valid': hasMinLength }">• 至少8位</p>
-                                <p :class="{ 'valid': hasLetter }">• 包含字母</p>
-                                <p :class="{ 'valid': hasNumber }">• 包含数字</p>
-                                <p :class="{ 'valid': hasSpecialChar }">• 包含特殊符号</p>
-                            </div>
-                            <div v-if="isPasswordValid" class="password-hint">
-                                <p :class="{ 'valid': isPasswordValid }">• 密码符合要求</p>
-                            </div>
-                        </div>
-                        <div>
-                            <label for="passwordAssure">确认密码:</label>
-                            <input type="password" id="passwordAssure" v-model="passwordAssure" placeholder="必须和上次输入一致" title=""  autocomplete="new-password">
-                        </div>
-                        <div style="display: flex; justify-content: space-between;">
-                            <button type="button" @click="backToPhoneEmail" style="display: block;">上一步</button>
-                            <button type="submit" style="display: block; margin-left: auto;" :disabled="!isPasswordValid">注册</button>
-                        </div>
-                    </form>
-
-                    <form v-else @submit.prevent="handleLogin">
-                        <div>
-                            <label for="login-username">用户名:</label>
-                            <input type="text" id="login-username" v-model="username" placeholder="请输入用户名" title=""  autocomplete="username">
-                        </div>
-                        <div>
-                            <label for="login-password">密码:</label>
-                            <input type="password" id="login-password" v-model="password" placeholder="请输入密码" title=""  autocomplete="current-password">
-                        </div>
-                        <button type="submit" style="display: flex; margin-left: auto; margin-right: auto">登陆</button>
-                    </form>
-
-                </transition>
-            </div>
-        </div>
-    </div>
-</template>
-
 <style scoped>
 /*大标题字体*/
 .fancy-title {
-    color: steelblue;
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     font-family: 'Simsun','Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
     font-weight: 800;
-    letter-spacing: 5px;
-    font-size: 36px;
+    letter-spacing: 10px;
+    font-size: 40px;
+
 }
 
-.fancy-title i {
-    margin-right: 10px;
-    color: #42b883;
-}
 
 /*表单过渡动画 - 正向*/
 .form-slide-enter-active,
@@ -420,10 +415,11 @@ export default {
 }
 
 .header h1 {
-    color: steelblue;
+    color: forestgreen;
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     margin-bottom: 15px;
 }
+
 
 .header button {
     padding: 10px 20px;
@@ -444,7 +440,7 @@ export default {
 .form-container {
     position: relative;
     width: 100%;
-    max-width: 400px;
+    max-width: 500px;
     min-height: 300px; /* 确保容器有最小高度 */
     padding: 0 20px; /* 添加水平内边距 */
     box-sizing: border-box; /* 包含内边距在内的宽度计算 */
@@ -473,11 +469,11 @@ form {
     margin-top: 0;
     /*width: 100%;*/
     padding: 30px;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.75);
     border-radius: 20px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
     position: relative;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(8px);
 }
 
 

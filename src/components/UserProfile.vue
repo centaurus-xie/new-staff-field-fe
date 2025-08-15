@@ -4,6 +4,8 @@
             v-model="visible"
             width="500px"
             @close="handleClose"
+            class="dialogue-box"
+
     >
         <el-form :model="userInfo" label-width="80px" class="profile-form">
             <el-form-item label="用户名">
@@ -21,7 +23,7 @@
         </el-form>
         <template #footer>
       <span class="dialog-footer">
-        <el-button @click="handleClose">关闭</el-button>
+        <el-button @click="handleClose" class="button-close">关闭</el-button>
       </span>
         </template>
     </el-dialog>
@@ -79,5 +81,47 @@ export default {
     border-radius: 20px;
 }
 
+/* 深度选择器 */
+.profile-form :deep(.el-input__wrapper) {
+    background: rgba(255, 255, 255, 0.5) !important;
+    border-radius: 15px !important;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1) !important;
+    backdrop-filter: blur(5px);
+}
 
+.button-close{
+    padding: 10px 20px;
+    background-color: rgba(66, 184, 131, 0.5);
+    color: #000000;
+    border: 1px solid rgba(66, 184, 131, 0.6);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: '085-上首元气体', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    font-size: 18px;
+    margin-right: 20px;
+}
+
+.button-close:hover{
+    background-color: rgba(66, 184, 131, 1);
+    color: #000000;
+    transform: translateY(-2px);
+}
+
+</style>
+
+<style>
+
+.dialogue-box {
+    overflow: hidden; /* 确保圆角效果 */
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    position: relative;
+    backdrop-filter: blur(8px);
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    margin: 0 !important;
+}
 </style>
