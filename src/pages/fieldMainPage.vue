@@ -2,7 +2,7 @@
     <div class="background">
     <el-container class="field-main-page">
         <el-header>
-            <h1 style="color: #007bff; text-align: center; font-size: 36px; ">欢迎加入NJCB</h1>
+            <h1 style="color: black; text-align: center; font-size: 36px; ">欢迎加入NJCB</h1>
         </el-header>
         <el-main>
             <el-row :gutter="20">

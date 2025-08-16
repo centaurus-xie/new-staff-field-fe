@@ -5,6 +5,10 @@
             width="500px"
             @close="handleClose"
             class="dialogue-box"
+            style="background: rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    position: relative;"
 
     >
         <el-form :model="userInfo" label-width="80px" class="profile-form">
@@ -87,6 +91,14 @@ export default {
     border-radius: 15px !important;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1) !important;
     backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px) !important;
+}
+
+/* 添加对禁用状态输入框的毛玻璃效果 */
+.profile-form :deep(.el-input.is-disabled .el-input__wrapper) {
+    background: rgba(255, 255, 255, 0.3) !important;
+    backdrop-filter: blur(5px) !important;
+    -webkit-backdrop-filter: blur(5px) !important;
 }
 
 .button-close{
@@ -114,14 +126,13 @@ export default {
 
 .dialogue-box {
     overflow: hidden; /* 确保圆角效果 */
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 20px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-    position: relative;
-    backdrop-filter: blur(8px);
+
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
     margin: 0 !important;
 }
+
 </style>

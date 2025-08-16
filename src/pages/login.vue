@@ -3,7 +3,7 @@
         <div class="app-container">
             <div class="header">
                 <h1 class="fancy-title">
-                    欢迎来到新员工园地
+                    新员工园地
                 </h1>
                 <button @click="toggleForm">{{ showLoginForm ? '没有账号？注册' : '已有账号？登陆' }}</button>
             </div>
@@ -162,14 +162,14 @@ export default {
             }
         },
 
-        // 返回上一步（从手机号邮箱页面返回到注册页面）
+        // 从手机号邮箱页面返回到注册页面
         backToRegister() {
             this.isReverse = true; // 设置反向动画
             this.showPhoneEmailForm = false;
             this.showRegisterForm = true;
         },
 
-        // 返回上一步（从密码页面返回到手机号邮箱页面）
+        // 从密码页面返回到手机号邮箱页面
         backToPhoneEmail() {
             this.isReverse = true; // 设置反向动画
             this.showPasswordForm = false;
