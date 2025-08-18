@@ -597,7 +597,7 @@ body, html {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('../assets/background.jpg');
+    background-image: url('/assets/background.jpg');
     background-size: cover; /* 背景图片覆盖整个容器 */
     background-position: center; /* 背景图片居中 */
 }
